@@ -1,33 +1,28 @@
 const display = document.getElementById("display");
 
-// ---- Append value ----
+// Append value
 function appendValue(value) {
   const lastChar = display.value.slice(-1);
 
-  // ---- Prevent double operators ----
-  if ("+-*/".includes(lastChar) && "+-*/".includes(value)) {
-    return;
-  }
-
-  // ---- Prevent multiple decimals ----
-  if (value === "." && display.value.includes(".")) {
+  // Prevent double operators
+  if ("+-*/%".includes(lastChar) && "+-*/%".includes(value)) {
     return;
   }
 
   display.value += value;
 }
 
-// ---- Clear display ----
+// Clear display
 function clearDisplay() {
   display.value = "";
 }
 
-// ---- Delete last character ----
+// Delete last character
 function deleteLast() {
   display.value = display.value.slice(0, -1);
 }
 
-// ---- Calculate result ----
+// Calculate result
 function calculate() {
   if (display.value === "") return;
 
@@ -38,27 +33,56 @@ function calculate() {
   }
 }
 
-// ---- Button clicks ----
+// ---------------- BUTTON EVENTS ---------------- //
+
 document.querySelectorAll(".number, .operator").forEach((button) => {
   button.addEventListener("click", () => {
     appendValue(button.dataset.value);
   });
 });
 
-// Special buttons
 document.getElementById("clear").addEventListener("click", clearDisplay);
 document.getElementById("delete").addEventListener("click", deleteLast);
 document.getElementById("equal").addEventListener("click", calculate);
 
-//  ---- Keyboard support ----
+// ---------------- KEYBOARD SUPPORT ---------------- //
+
 document.addEventListener("keydown", (e) => {
-  if (!isNaN(e.key) || "+-*/.".includes(e.key)) {
-    appendValue(e.key);
-  } else if (e.key === "Enter") {
+  const key = e.key;
+
+  // Numbers (0–9)
+  if (/[0-9]/.test(key)) {
+    appendValue(key);
+  }
+
+  // Operators
+  else if ("+-*/%".includes(key)) {
+    appendValue(key);
+  }
+
+  // Decimal (only one per number)
+  else if (key === ".") {
+    let parts = display.value.split(/[\+\-\*\/%]/);
+    let lastPart = parts[parts.length - 1];
+
+    if (!lastPart.includes(".")) {
+      appendValue(".");
+    }
+  }
+
+  // Enter → calculate
+  else if (key === "Enter") {
+    e.preventDefault();
     calculate();
-  } else if (e.key === "Backspace") {
+  }
+
+  // Backspace → delete
+  else if (key === "Backspace") {
     deleteLast();
-  } else if (e.key === "Escape") {
+  }
+
+  // Escape → clear
+  else if (key === "Escape") {
     clearDisplay();
   }
 });
