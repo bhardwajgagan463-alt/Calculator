@@ -12,7 +12,7 @@ body {
   height: 100vh;
   font-family: Arial, sans-serif;
   background: #72d5fc;
-background: linear-gradient(45deg, rgba(114, 213, 252, 1) 0%, rgba(252, 252, 252, 1) 50%, rgba(114, 213, 252, 1) 100%);
+background: linear-gradient(45deg, rgb(12, 30, 37) 0%, rgba(252, 252, 252, 1) 50%, rgb(41, 70, 83) 100%);
 }
 
 .calculator {

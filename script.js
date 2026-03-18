@@ -1,44 +1,56 @@
-function appendValue(value) {
-  let display = document.getElementById("display");
-  let lastChar = display.value.slice(-1);
+const display = document.getElementById("display");
 
+// ---- Append value ----
+function appendValue(value) {
+  const lastChar = display.value.slice(-1);
+
+  // ---- Prevent double operators ----
   if ("+-*/".includes(lastChar) && "+-*/".includes(value)) {
+    return;
+  }
+
+  // ---- Prevent multiple decimals ----
+  if (value === "." && display.value.includes(".")) {
     return;
   }
 
   display.value += value;
 }
 
+// ---- Clear display ----
 function clearDisplay() {
-  document.getElementById("display").value = "";
+  display.value = "";
 }
 
+// ---- Delete last character ----
 function deleteLast() {
-  let display = document.getElementById("display");
   display.value = display.value.slice(0, -1);
 }
 
+// ---- Calculate result ----
 function calculate() {
-  let display = document.getElementById("display");
+  if (display.value === "") return;
 
   try {
-    display.value = Function('"use strict";return (' + display.value + ")")();
+    display.value = eval(display.value);
   } catch {
     alert("Invalid Expression");
   }
 }
 
-document.querySelectorAll("button").forEach((button) => {
+// ---- Button clicks ----
+document.querySelectorAll(".number, .operator").forEach((button) => {
   button.addEventListener("click", () => {
-    button.style.transform = "scale(0.9)";
-    setTimeout(() => {
-      button.style.transform = "scale(1)";
-    }, 100);
+    appendValue(button.dataset.value);
   });
 });
 
-// ----Keyboard support----  //
+// Special buttons
+document.getElementById("clear").addEventListener("click", clearDisplay);
+document.getElementById("delete").addEventListener("click", deleteLast);
+document.getElementById("equal").addEventListener("click", calculate);
 
+//  ---- Keyboard support ----
 document.addEventListener("keydown", (e) => {
   if (!isNaN(e.key) || "+-*/.".includes(e.key)) {
     appendValue(e.key);
